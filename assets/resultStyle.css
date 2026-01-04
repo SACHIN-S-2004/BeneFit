@@ -1,0 +1,206 @@
+/* --- VARIABLES --- */
+:root {
+  --primary: #00d2ff;
+  --secondary: #3a7bd5;
+  --accent: #10b981;
+  
+  /* Dark Mode (Default) */
+  --bg-color: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --card-hover: rgba(255, 255, 255, 0.05);
+  --nav-glass: rgba(15, 23, 42, 0.8);
+}
+
+[data-theme="light"] {
+  --bg-color: #f0f4f8;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  --card-hover: rgba(255, 255, 255, 0.9);
+  --nav-glass: rgba(255, 255, 255, 0.8);
+}
+
+/* --- GLOBAL STYLES --- */
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* --- ANIMATED BACKGROUND --- */
+.ambient-light {
+  position: absolute;
+  width: 50vw;
+  height: 50vw;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+  animation: float 10s ease-in-out infinite;
+  opacity: 0.4;
+}
+.light-1 { 
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    top: -10%; left: -10%; 
+}
+.light-2 { 
+    background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+    bottom: 0%; right: -10%; 
+    animation-delay: 2s; 
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, 50px); }
+}
+
+/* --- NAVBAR --- */
+.navbar {
+  background: var(--nav-glass);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.navbar-brand {
+  font-weight: 800;
+  color: var(--text-main) !important;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- GLASS COMPONENTS & IMAGES --- */
+.result-hero {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    overflow: hidden;
+    margin-bottom: 50px;
+    box-shadow: var(--glass-shadow);
+}
+
+.hero-content { padding: 40px; }
+
+.hero-image {
+    background-image: url('../assets/Fitness.png'); /* Main hero image showing balanced food */
+    background-size: cover;
+    background-position: center;
+    min-height: 300px;
+    position: relative;
+    margin-right: 3%;
+    border-radius: 15px;
+}
+/* Add a subtle gradient overlay to the image so it sits nicely in the glass */
+.hero-image::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to right, var(--bg-color), transparent);
+    opacity: 0.5;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    background: var(--card-hover);
+    border-color: var(--accent);
+}
+
+/* --- MEAL SECTION STYLING --- */
+.meal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: var(--glass-bg);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+}
+
+.meal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.meal-header-img {
+    width: 80px;
+    height: 60px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
+/* --- TYPOGRAPHY & ELEMENTS --- */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nutrition-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+}
+[data-theme="light"] .nutrition-pill { background: rgba(0,0,0,0.05); color: var(--text-main); }
+
+/* --- BUTTONS --- */
+.btn-glass-primary {
+    background: linear-gradient(135deg, var(--accent), #059669);
+    border: none; color: white; border-radius: 50px; padding: 12px 35px; font-weight: 700;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); transition: all 0.3s ease;
+}
+.btn-glass-primary:hover {
+    transform: translateY(-3px); box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #059669, var(--accent)); color: white;
+}
+
+/* --- ANIMATIONS --- */
+.fade-up {
+    animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; transform: translateY(30px);
+}
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+.delay-4 { animation-delay: 0.8s; }
+
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }

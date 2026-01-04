@@ -1,0 +1,231 @@
+/* --- VARIABLES --- */
+:root {
+  --primary: #00d2ff;
+  --secondary: #3a7bd5;
+  --accent: #10b981;
+  
+  /* Dark Mode (Default) */
+  --bg-color: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-border: rgba(255, 255, 255, 0.08);
+  --nav-glass: rgba(15, 23, 42, 0.8);
+}
+
+[data-theme="light"] {
+  --bg-color: #f0f4f8;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.6);
+  --input-border: rgba(0, 0, 0, 0.1);
+  --nav-glass: rgba(255, 255, 255, 0.8);
+}
+
+/* --- GLOBAL STYLES --- */
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* --- ANIMATED BACKGROUND --- */
+.ambient-light {
+  position: absolute;
+  width: 50vw;
+  height: 50vw;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+  animation: float 10s ease-in-out infinite;
+  opacity: 0.4;
+}
+.light-1 { 
+    background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+    top: -10%; left: -10%; 
+}
+.light-2 { 
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    bottom: -10%; right: -10%; 
+    animation-delay: 2s; 
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, 50px); }
+}
+
+/* --- GLASS COMPONENTS --- */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 24px;
+  padding: 40px;
+  animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* --- NAVBAR --- */
+.navbar {
+  background: var(--nav-glass);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-brand {
+  font-weight: 800;
+  color: var(--text-main) !important;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- FORM ELEMENTS --- */
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.input-group-text {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-right: none;
+  color: var(--accent);
+  transition: all 0.3s ease;
+}
+
+.form-control, .form-select {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-left: none; /* If using input group */
+  color: var(--text-main);
+  padding: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* Fix for select elements that don't have input-group-text prepended */
+.form-select:not(.rounded-end-3) {
+    border-left: 1px solid var(--input-border);
+}
+
+/* Dropdown option styling for dark mode visibility */
+.form-select option {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  padding: 12px;
+  font-weight: 500;
+}
+
+/* Enhanced select dropdown appearance */
+.form-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2310b981' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  padding-right: 40px;
+}
+
+[data-theme="light"] .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2310b981' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.form-control:focus, .form-select:focus {
+  background: var(--input-bg);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  color: var(--text-main);
+}
+
+.form-control:focus + .input-group-text, 
+.input-group:focus-within .input-group-text {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Placeholder styling for visibility in both themes */
+.form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.form-control:focus::placeholder {
+  opacity: 0.5;
+}
+
+.section-title {
+    position: relative;
+    padding-left: 15px;
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background: var(--accent);
+    border-radius: 4px;
+}
+
+/* --- BUTTONS --- */
+.btn-success {
+  background: linear-gradient(135deg, var(--accent), #059669);
+  border: none;
+  padding: 14px 40px;
+  border-radius: 50px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  color: white;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, #059669, var(--accent));
+}
+
+.btn-outline-glass {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    transition: all 0.2s;
+}
+.btn-outline-glass:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--text-main);
+    color: var(--text-main);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
