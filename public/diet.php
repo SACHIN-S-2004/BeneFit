@@ -27,7 +27,7 @@ require_auth();
   <nav class="navbar navbar-expand-lg px-4 py-3">
     <div class="container-fluid">
       <a class="navbar-brand fs-4" href="dashboard.php">
-        <i class="bi bi-robot me-2"></i>AI Planner
+        <i class="bi bi-robot me-2"></i>BeneFit
       </a>
       <div class="ms-auto d-flex align-items-center gap-3">
         <button onclick="toggleTheme()" class="btn btn-outline-glass rounded-circle p-2" style="width: 42px; height: 42px;">
@@ -50,7 +50,7 @@ require_auth();
           <p class="text-muted">Enter your biometrics below. Our algorithm adapts to over 50 health markers.</p>
       </div>
 
-      <form method="POST" action="result.php">
+      <form method="POST" action="result.php" id="dietForm" novalidate>
         
         <div class="row g-5">
             <div class="col-lg-6">
@@ -60,8 +60,9 @@ require_auth();
                     <label class="form-label">Age</label>
                     <div class="input-group">
                         <span class="input-group-text rounded-start-3"><i class="bi bi-calendar3"></i></span>
-                        <input type="number" name="age" class="form-control rounded-end-3" placeholder="e.g. 25" required>
+                        <input type="number" name="age" id="age" class="form-control rounded-end-3" placeholder="e.g. 25" min="1" max="120" required>
                     </div>
+                    <small class="text-muted">Valid range: 1-120 years</small>
                 </div>
 
                 <div class="mb-3">
@@ -79,16 +80,18 @@ require_auth();
                     <label class="form-label">Height (cm)</label>
                     <div class="input-group">
                         <span class="input-group-text rounded-start-3"><i class="bi bi-rulers"></i></span>
-                        <input type="number" step="0.1" id="height" class="form-control rounded-end-3" placeholder="e.g. 175" required>
+                        <input type="number" step="0.1" id="height" name="height" class="form-control rounded-end-3" placeholder="e.g. 175" min="50" max="250" required>
                     </div>
+                    <small class="text-muted">Valid range: 50-250 cm</small>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Weight (kg)</label>
                     <div class="input-group">
                         <span class="input-group-text rounded-start-3"><i class="bi bi-person-standing"></i></span>
-                        <input type="number" step="0.1" id="weight" class="form-control rounded-end-3" placeholder="e.g. 70" required>
+                        <input type="number" step="0.1" id="weight" name="weight" class="form-control rounded-end-3" placeholder="e.g. 70" min="20" max="300" required>
                     </div>
+                    <small class="text-muted">Valid range: 20-300 kg</small>
                 </div>
 
                 <div class="mb-3">
@@ -124,24 +127,27 @@ require_auth();
                     <label class="form-label">Cholesterol (mg/dL)</label>
                     <div class="input-group">
                         <span class="input-group-text rounded-start-3"><i class="bi bi-droplet"></i></span>
-                        <input type="number" name="cholesterol" class="form-control rounded-end-3" placeholder="Optional">
+                        <input type="number" name="cholesterol" id="cholesterol" class="form-control rounded-end-3" placeholder="Optional" min="100" max="400">
                     </div>
+                    <small class="text-muted">Valid range: 100-400 mg/dL</small>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Blood Pressure</label>
+                    <label class="form-label">Blood Pressure (Systolic)</label>
                     <div class="input-group">
                         <span class="input-group-text rounded-start-3"><i class="bi bi-speedometer2"></i></span>
-                        <input type="number" name="bp" class="form-control rounded-end-3" placeholder="Optional">
+                        <input type="number" name="bp" id="bp" class="form-control rounded-end-3" placeholder="Optional" min="60" max="200">
                     </div>
+                    <small class="text-muted">Valid range: 60-200 mmHg</small>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Glucose Level</label>
+                    <label class="form-label">Glucose Level (mg/dL)</label>
                     <div class="input-group">
                         <span class="input-group-text rounded-start-3"><i class="bi bi-capsule"></i></span>
-                        <input type="number" name="glucose" class="form-control rounded-end-3" placeholder="Optional">
+                        <input type="number" name="glucose" id="glucose" class="form-control rounded-end-3" placeholder="Optional" min="50" max="400">
                     </div>
+                    <small class="text-muted">Valid range: 50-400 mg/dL</small>
                 </div>
             </div>
         </div>
@@ -159,6 +165,69 @@ require_auth();
   </div>
 
 <script>
+// Form Validation
+const validationRules = {
+  age: { min: 1, max: 120, name: 'Age' },
+  height: { min: 50, max: 270, name: 'Height' },
+  weight: { min: 20, max: 300, name: 'Weight' },
+  cholesterol: { min: 100, max: 800, name: 'Cholesterol', optional: true },
+  bp: { min: 60, max: 250, name: 'Blood Pressure', optional: true },
+  glucose: { min: 50, max: 1000, name: 'Glucose Level', optional: true }
+};
+
+function validateField(fieldId) {
+  const field = document.getElementById(fieldId);
+  const rules = validationRules[fieldId];
+  const value = parseFloat(field.value);
+  
+  if (!field.value && rules.optional) {
+    field.classList.remove('is-invalid');
+    field.classList.remove('is-valid');
+    return true;
+  }
+  
+  if (!field.value || isNaN(value) || value < rules.min || value > rules.max) {
+    field.classList.add('is-invalid');
+    field.classList.remove('is-valid');
+    return false;
+  }
+  
+  field.classList.remove('is-invalid');
+  field.classList.add('is-valid');
+  return true;
+}
+
+function validateForm(e) {
+  e.preventDefault();
+  let isValid = true;
+  
+  for (let fieldId in validationRules) {
+    if (!validateField(fieldId)) {
+      isValid = false;
+    }
+  }
+  
+  if (!isValid) {
+    alert('Please check all fields and ensure values are within valid ranges.');
+    return false;
+  }
+  
+  // If valid, submit the form
+  e.target.submit();
+}
+
+// Add validation on input
+for (let fieldId in validationRules) {
+  const field = document.getElementById(fieldId);
+  if (field) {
+    field.addEventListener('input', () => validateField(fieldId));
+    field.addEventListener('blur', () => validateField(fieldId));
+  }
+}
+
+// Add form submit validation
+document.getElementById('dietForm').addEventListener('submit', validateForm);
+
 // BMI Calculation Logic
 function calculateBMI() {
   const h = document.getElementById("height").value / 100;

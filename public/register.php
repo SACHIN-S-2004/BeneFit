@@ -4,14 +4,24 @@ include "../includes/db.php";
 require_once "../includes/auth.php";
 redirect_if_logged_in();
 
+$success_message = "";
+$error_message = "";
+
 if ($_POST) {
   $name = $_POST['name'];
   $email = $_POST['email'];
   $pass = password_hash($_POST['password'], PASSWORD_BCRYPT);
 
-  $conn->query("INSERT INTO users(name,email,password)
-                VALUES('$name','$email','$pass')");
-  header("Location: login.php");
+  // Check if email already exists
+  $check_email = $conn->query("SELECT id FROM users WHERE email='$email'");
+  
+  if ($check_email->num_rows > 0) {
+    $error_message = "Email already exists";
+  } else {
+    $conn->query("INSERT INTO users(name,email,password)
+                  VALUES('$name','$email','$pass')");
+    $success_message = "Registration Successful";
+  }
 }
 ?>
 
@@ -42,6 +52,21 @@ if ($_POST) {
       <h2 class="fw-bold mb-1">Create Account</h2>
       <p class="text-muted small">Join the future of fitness planning</p>
     </div>
+
+    <?php if ($success_message): ?>
+      <div class="alert alert-success text-center" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><?php echo $success_message; ?>
+        <p class="mb-0 mt-2">
+          <a href="login.php" class="fw-bold">Click here to login</a>
+        </p>
+      </div>
+    <?php else: ?>
+
+    <?php if ($error_message): ?>
+      <div class="alert alert-danger text-center" role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i><?php echo $error_message; ?>
+      </div>
+    <?php endif; ?>
 
     <form method="POST">
       <div class="mb-3">
@@ -78,6 +103,8 @@ if ($_POST) {
         Already a member? <a href="login.php">Log In</a>
       </p>
     </div>
+
+    <?php endif; ?>
   </div>
 
 <script>
