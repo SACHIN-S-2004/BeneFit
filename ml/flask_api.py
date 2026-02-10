@@ -7,10 +7,10 @@ app = Flask(__name__)
 # =========================
 # Load ML model & encoders
 # =========================
-with open("ml/diet_model.pkl", "rb") as f:
+with open("/app/ml/diet_model.pkl", "rb") as f:
     model = pickle.load(f)
 
-with open("ml/label_encoders.pkl", "rb") as f:
+with open("/app/ml/label_encoders.pkl", "rb") as f:
     encoders = pickle.load(f)
 
 feature_encoders = encoders["features"]
@@ -19,7 +19,7 @@ target_encoder = encoders["target"]
 # =========================
 # Load food dataset
 # =========================
-food_df = pd.read_csv("datasets/daily_food_nutrition_dataset.csv")
+food_df = pd.read_csv("/app/datasets/daily_food_nutrition_dataset.csv")
 food_df.columns = food_df.columns.str.strip()
 
 # =========================

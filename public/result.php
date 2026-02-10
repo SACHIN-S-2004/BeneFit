@@ -45,7 +45,7 @@ $response['final_diet'] = format_diet_name($response['final_diet']);
 
 // Save result
 $conn->query("
-INSERT INTO diet_results (user_id, goal, diet)
+INSERT INTO diet_results (user_id, goal, final_diet)
 VALUES ({$_SESSION['user_id']}, '{$response['goal']}', '{$response['final_diet']}')
 ");
 
