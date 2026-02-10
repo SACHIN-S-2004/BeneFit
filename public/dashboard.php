@@ -107,7 +107,7 @@ $history = $conn->query(
       <div class="stat-card text-center">
         <i class="bi bi-basket2-fill fs-1 mb-3 d-block text-success"></i>
         <h5 class="mb-2 text-secondary text-uppercase small ls-1">Recommended Diet</h5>
-        <h2 class="display-6 fw-bold text-gradient"><?= $latest ? htmlspecialchars($latest['diet']) : '—' ?></h2>
+        <h2 class="display-6 fw-bold text-gradient"><?= $latest ? htmlspecialchars($latest['final_diet']) : '—' ?></h2>
       </div>
     </div>
   </div>
@@ -169,7 +169,7 @@ $history = $conn->query(
                         <?= htmlspecialchars($row['goal']) ?>
                     </span>
                 </td>
-                <td class="fw-bold text-accent"><?= htmlspecialchars($row['diet']) ?></td>
+                <td class="fw-bold text-accent"><?= htmlspecialchars($row['final_diet']) ?></td>
                 <td class="text-end">
                     <i class="bi bi-check-circle-fill text-success opacity-75"></i>
                 </td>

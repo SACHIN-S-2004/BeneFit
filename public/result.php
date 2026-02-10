@@ -33,7 +33,7 @@ VALUES
 ");
 
 // Call Flask API
-$ch = curl_init("http://127.0.0.1:5000/predict");
+$ch = curl_init("http://benefit_python:5000/predict");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
 curl_setopt($ch, CURLOPT_POST, true);
