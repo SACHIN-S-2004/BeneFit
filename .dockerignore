@@ -1,0 +1,12 @@
+ml-env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+.vscode/
+*.log
+.env
+README.md
+dockerfile

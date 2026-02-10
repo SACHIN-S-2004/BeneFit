@@ -1,0 +1,59 @@
+services:
+  # PHP/Apache Service
+  php:
+    build:
+      context: .
+      dockerfile: php/Dockerfile
+    image: benefit-php
+    container_name: benefit_php
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public:/var/www/html
+      - ./includes:/var/www/html/includes
+      - ./assets:/var/www/html/assets
+    depends_on:
+      - mysql
+      - python
+    networks:
+      - benefit_network
+
+  # MySQL Database Service
+  mysql:
+    build:
+      context: .
+      dockerfile: mysql/Dockerfile
+    container_name: benefit_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: benefit_db
+      MYSQL_USER: benefit_user
+      MYSQL_PASSWORD: benefit_pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - benefit_network
+
+  # Python/Flask ML API Service
+  python:
+    build:
+      context: .
+      dockerfile: python/Dockerfile
+    container_name: benefit_python
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./ml:/app/ml
+      - ./datasets:/app/datasets
+    networks:
+      - benefit_network
+
+networks:
+  benefit_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
