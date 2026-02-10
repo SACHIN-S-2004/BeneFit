@@ -6,9 +6,9 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql \
     && a2enmod rewrite
 
 # Copy PHP application files
-COPY ../public/ /var/www/html/
-COPY ../includes/ /var/www/html/includes/
-COPY ../assets/ /var/www/html/assets/
+COPY ./public/ /var/www/html/
+COPY ./includes/ /var/www/html/includes/
+COPY ./assets/ /var/www/html/assets/
 
 # Set working directory
 WORKDIR /var/www/html

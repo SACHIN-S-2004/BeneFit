@@ -1,7 +1,7 @@
 <?php
-include "../includes/db.php";
+include "includes/db.php";
 
-require_once "../includes/auth.php";
+require_once "includes/auth.php";
 redirect_if_logged_in();
 
 $error = "";

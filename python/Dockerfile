@@ -5,8 +5,8 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copy ML files and datasets
-COPY ../ml/ /app/ml/
-COPY ../datasets/ /app/datasets/
+COPY ./ml/ /app/ml/
+COPY ./datasets/ /app/datasets/
 
 # Install Python dependencies
 RUN pip install --no-cache-dir flask scikit-learn pandas numpy
