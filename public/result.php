@@ -2,9 +2,13 @@
 include "../includes/db.php";
 
 require_once "../includes/auth.php";
+require_once "../includes/calculations.php";
 require_auth();
 
 // --- KEEPING YOUR ORIGINAL PHP LOGIC INTACT ---
+$height = (float)$_POST["height"];
+$weight = (float)$_POST["weight"];
+
 $data = [
     "Age" => (int)$_POST["age"],
     "Gender" => $_POST["gender"],
@@ -16,23 +20,7 @@ $data = [
     "Glucose_mg/dL" => (float)$_POST["glucose"]
 ];
 
-// Save inputs
-$conn->query("
-INSERT INTO health_inputs
-(user_id, age, gender, bmi, activity, disease, cholesterol, bp, glucose)
-VALUES
-({$_SESSION['user_id']},
-{$data['Age']},
-'{$data['Gender']}',
-{$data['BMI']},
-'{$data['Physical_Activity_Level']}',
-'{$data['Disease_Type']}',
-{$data['Cholesterol_mg/dL']},
-{$data['Blood_Pressure_mmHg']},
-{$data['Glucose_mg/dL']})
-");
-
-// Call Flask API
+// Call Flask API first — goal is required for macro calculations
 $ch = curl_init("http://benefit_python:5000/predict");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -43,7 +31,46 @@ curl_close($ch);
 
 $response['final_diet'] = format_diet_name($response['final_diet']);
 
-// Save result
+// Calculate BMR, TDEE, macros, and water using the AI-inferred goal
+$metrics = calculate_health_metrics(
+    $data['Age'],
+    $data['Gender'],
+    $height,
+    $weight,
+    $data['Physical_Activity_Level'],
+    $response['goal']
+);
+
+// Save health inputs (including all calculated metrics)
+$conn->query("
+INSERT INTO health_inputs
+  (user_id, age, gender,
+   height_cm, weight_kg, bmi,
+   bmr, tdee, daily_calorie_target, daily_water_liters,
+   protein_g, carbs_g, fats_g,
+   activity, disease, cholesterol, bp, glucose)
+VALUES
+  ({$_SESSION['user_id']},
+   {$data['Age']},
+   '{$data['Gender']}',
+   $height,
+   $weight,
+   {$metrics['bmi']},
+   {$metrics['bmr']},
+   {$metrics['tdee']},
+   {$metrics['daily_calorie_target']},
+   {$metrics['daily_water_liters']},
+   {$metrics['protein_g']},
+   {$metrics['carbs_g']},
+   {$metrics['fats_g']},
+   '{$data['Physical_Activity_Level']}',
+   '{$data['Disease_Type']}',
+   {$data['Cholesterol_mg/dL']},
+   {$data['Blood_Pressure_mmHg']},
+   {$data['Glucose_mg/dL']})
+");
+
+// Save diet result
 $conn->query("
 INSERT INTO diet_results (user_id, goal, final_diet)
 VALUES ({$_SESSION['user_id']}, '{$response['goal']}', '{$response['final_diet']}')
@@ -95,7 +122,7 @@ $meal_config = [
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../assets/resultStyle.css">
+<link rel="stylesheet" href="../assets/resultStyle.css?v=<?= filemtime('/var/www/assets/resultStyle.css') ?>">
 </head>
 
 <body>
@@ -149,6 +176,49 @@ $meal_config = [
             </div>
         </div>
     </div>
+
+    <?php if (!empty($response) && isset($response['final_diet'])): ?>
+        <div class="metrics-section fade-up delay-1">
+            <div class="metrics-section-header">
+                <h3 class="metrics-section-title"><i class="bi bi-bar-chart-fill me-2"></i>Your <span>Daily Targets</span></h3>
+                <p class="metrics-section-subtitle">Personalised nutrition targets calculated from your biometrics &amp; goal</p>
+            </div>
+
+            <div class="metrics-strip">
+
+                <div class="metric-card" style="--metric-color:#eab308;">
+                    <div class="metric-icon-wrap"><i class="bi bi-lightning-charge-fill"></i></div>
+                    <div class="metric-value"><?= $metrics['daily_calorie_target'] ?> <span class="metric-unit">kcal</span></div>
+                    <div class="metric-label">Daily Calories</div>
+                </div>
+
+                <div class="metric-card" style="--metric-color:#00d2ff;">
+                    <div class="metric-icon-wrap"><i class="bi bi-droplet-fill"></i></div>
+                    <div class="metric-value"><?= $metrics['daily_water_liters'] ?> <span class="metric-unit">L</span></div>
+                    <div class="metric-label">Water / Day</div>
+                </div>
+
+                <div class="metric-card" style="--metric-color:#10b981;">
+                    <div class="metric-icon-wrap"><i class="bi bi-egg-fill"></i></div>
+                    <div class="metric-value"><?= $metrics['protein_g'] ?> <span class="metric-unit">g</span></div>
+                    <div class="metric-label">Protein</div>
+                </div>
+
+                <div class="metric-card" style="--metric-color:#f97316;">
+                    <div class="metric-icon-wrap"><i class="bi bi-layers-fill"></i></div>
+                    <div class="metric-value"><?= $metrics['carbs_g'] ?> <span class="metric-unit">g</span></div>
+                    <div class="metric-label">Carbs</div>
+                </div>
+
+                <div class="metric-card" style="--metric-color:#a855f7;">
+                    <div class="metric-icon-wrap"><i class="bi bi-droplet-half"></i></div>
+                    <div class="metric-value"><?= $metrics['fats_g'] ?> <span class="metric-unit">g</span></div>
+                    <div class="metric-label">Fats</div>
+                </div>
+
+            </div>
+        </div>
+    <?php endif; ?>
 
     <div class="row g-5">
         <?php 
