@@ -204,3 +204,177 @@ body {
 .delay-4 { animation-delay: 0.8s; }
 
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+/* --- METRICS SECTION --- */
+.metrics-section {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    padding: 40px;
+    margin-bottom: 50px;
+    box-shadow: var(--glass-shadow);
+}
+
+.metrics-section-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.metrics-section-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.metrics-section-title span {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.metrics-section-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* --- METRICS STRIP (CSS grid — no Bootstrap columns) --- */
+.metrics-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 991px) {
+    .metrics-strip { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 575px) {
+    .metrics-strip { grid-template-columns: repeat(2, 1fr); }
+}
+
+.metric-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 28px 16px 22px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .metric-card {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+
+/* Glowing top border */
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--metric-color, var(--accent));
+    box-shadow: 0 0 12px var(--metric-color, var(--accent));
+    border-radius: 24px 24px 0 0;
+    z-index: 2;
+}
+
+/* Soft background glow — kept behind all content */
+.metric-card::after {
+    content: '';
+    position: absolute;
+    top: -40px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 120px;
+    background: var(--metric-color, var(--accent));
+    filter: blur(45px);
+    opacity: 0.13;
+    z-index: 0;
+    border-radius: 50%;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.metric-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--metric-color, var(--accent));
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2),
+                0 0 0 1px var(--metric-color, var(--accent)) inset;
+}
+
+[data-theme="light"] .metric-card:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.metric-card:hover::after {
+    opacity: 0.28;
+}
+
+.metric-card:hover .metric-icon-wrap {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 20px var(--metric-color, var(--accent));
+}
+
+.metric-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 1.4rem;
+    background: rgba(255,255,255,0.04);
+    color: var(--metric-color, var(--accent));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    z-index: 1;
+    transition: all 0.4s ease;
+}
+
+[data-theme="light"] .metric-icon-wrap {
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.metric-value {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.15;
+    position: relative;
+    z-index: 1;
+}
+
+[data-theme="light"] .metric-value { color: var(--text-main); }
+
+.metric-unit {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--metric-color, var(--accent));
+    margin-left: 3px;
+}
+
+.metric-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 8px;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
