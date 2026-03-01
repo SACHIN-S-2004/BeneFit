@@ -7,8 +7,14 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql \
 
 # Copy PHP application files
 COPY ./public/ /var/www/html/
-COPY ./includes/ /var/www/html/includes/
-COPY ./assets/ /var/www/html/assets/
+
+# Copy includes and assets outside the document root to avoid
+# nested bind-mount issues (prevents phantom dirs in ./public)
+COPY ./includes/ /var/www/includes/
+COPY ./assets/ /var/www/assets/
+
+# Apply custom virtual host config (adds /assets alias)
+COPY ./docker/php/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # Set working directory
 WORKDIR /var/www/html
