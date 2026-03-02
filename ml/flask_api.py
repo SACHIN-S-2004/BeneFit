@@ -90,7 +90,7 @@ def recommend_food(final_diet, meal_type):
     df = df[df["Meal_Type"] == meal_type]
 
     return df[
-        ["Food_Item", "Calories (kcal)", "Protein (g)", "Carbohydrates (g)", "Fat (g)"]
+        ["id", "Food_Item", "Calories (kcal)", "Protein (g)", "Carbohydrates (g)", "Fat (g)"]
     ].head(5).to_dict(orient="records")
 
 # =========================
