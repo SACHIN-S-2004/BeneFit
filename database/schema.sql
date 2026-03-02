@@ -36,10 +36,12 @@ CREATE TABLE IF NOT EXISTS health_inputs (
 CREATE TABLE IF NOT EXISTS diet_results (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
+  health_input_id INT NOT NULL,
   goal VARCHAR(20),
   final_diet VARCHAR(50),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (health_input_id) REFERENCES health_inputs(id) ON DELETE CASCADE
 );
 
 CREATE TABLE diet_result_foods (

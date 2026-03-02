@@ -70,10 +70,11 @@ VALUES
    {$data['Glucose_mg/dL']})
 ");
 
+$health_input_id = $conn->insert_id;
 // Save diet result
 $conn->query("
-INSERT INTO diet_results (user_id, goal, final_diet)
-VALUES ({$_SESSION['user_id']}, '{$response['goal']}', '{$response['final_diet']}')
+INSERT INTO diet_results (user_id, health_input_id, goal, final_diet)
+VALUES ({$_SESSION['user_id']}, $health_input_id, '{$response['goal']}', '{$response['final_diet']}')
 ");
 
 // Save recommended foods linked to this diet result
@@ -282,7 +283,7 @@ $meal_config = [
         <a href="diet.php" class="btn btn-glass-primary">
             <i class="bi bi-arrow-counterclockwise me-2"></i> Recalculate Plan
         </a>
-        <p class="text-muted small mt-3">Not happy with these results? Update your metrics.</p>
+        <p class="text-center py-3 text-secondary mt-3 mb-1">Not happy with these results? Update your metrics.</p>
     </div>
 
   </div>

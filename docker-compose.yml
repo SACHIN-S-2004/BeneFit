@@ -7,11 +7,12 @@ services:
     image: sachins9562/benefit-php:v1.0
     container_name: benefit_php
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - ./public:/var/www/html
       - ./includes:/var/www/includes
       - ./assets:/var/www/assets
+      - ./datasets:/var/www/datasets
     depends_on:
       - mysql
       - python

@@ -152,12 +152,12 @@ $history = $conn->query(
               <th>Date Created</th>
               <th>Goal Type</th>
               <th>Diet Recommendation</th>
-              <th class="text-end">Status</th>
+              <th class="text-end">Action</th>
             </tr>
           </thead>
           <tbody>
             <?php while ($row = $history->fetch_assoc()): ?>
-              <tr>
+              <tr style="cursor: pointer;" onclick="window.location='history_view.php?id=<?= $row['id'] ?>'">
                 <td>
                     <div class="d-flex align-items-center">
                         <i class="bi bi-calendar-event me-2 text-secondary"></i>
@@ -171,7 +171,9 @@ $history = $conn->query(
                 </td>
                 <td class="fw-bold text-accent"><?= htmlspecialchars($row['final_diet']) ?></td>
                 <td class="text-end">
-                    <i class="bi bi-check-circle-fill text-success opacity-75"></i>
+                    <a href="history_view.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="event.stopPropagation();">
+                        <i class="bi bi-eye me-1"></i> View
+                    </a>
                 </td>
               </tr>
             <?php endwhile; ?>
