@@ -76,6 +76,18 @@ INSERT INTO diet_results (user_id, goal, final_diet)
 VALUES ({$_SESSION['user_id']}, '{$response['goal']}', '{$response['final_diet']}')
 ");
 
+// Save recommended foods linked to this diet result
+$diet_result_id = $conn->insert_id;
+foreach (["breakfast", "lunch", "dinner"] as $meal_type) {
+    foreach ($response[$meal_type] as $food) {
+        $food_id = (int)$food["id"];
+        $conn->query("
+            INSERT INTO diet_result_foods (diet_result_id, food_id, meal_type)
+            VALUES ($diet_result_id, $food_id, '$meal_type')
+        ");
+    }
+}
+
 // Function to format diet name to user-friendly display
 function format_diet_name($diet_name) {
     // Replace underscores with spaces

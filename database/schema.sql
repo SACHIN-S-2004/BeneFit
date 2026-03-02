@@ -41,3 +41,12 @@ CREATE TABLE IF NOT EXISTS diet_results (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE diet_result_foods (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  diet_result_id INT NOT NULL,
+  food_id INT NOT NULL,
+  meal_type ENUM('breakfast','lunch','dinner','snack') NOT NULL,
+
+  FOREIGN KEY (diet_result_id) REFERENCES diet_results(id) ON DELETE CASCADE
+);
